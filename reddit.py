@@ -51,7 +51,7 @@ class RedditApp:
         directory_button = wx.Button(panel, label="Select", pos=(100, 75))
         directory_button.Bind(wx.EVT_BUTTON, self._set_directory)
         scrape_button  = wx.Button(panel, label="Scrape", pos=(100, 105))
-        scrape_button.Bind(wx.EVT_BUTTON, self._set_scrape)
+        scrape_button.Bind(wx.EVT_BUTTON, self._start_scrape)
 
         self.progress_bar = wx.Gauge(panel, range=100, pos=(20, 160), size=(265, 15))
         self.directory = os.getcwd()
@@ -145,15 +145,14 @@ class RedditApp:
         self.progress_bar_range = progress_range
         self.progress_bar.SetRange(progress_range)
 
-    def _set_scrape(self, event): 
+    def _start_scrape(self, event): 
         self.subreddit = self.subreddit_textctrl.GetValue()
         self.limit = self.limit_textctrl.GetValue()
         if self.subreddit and self.limit: 
             self.limit = int(self.limit)
+            self.scrape_thread.start()
         else: 
             self._message_box("Subreddit or Limit missing")
-        
-        self.scrape_thread.start()
 
     def _message_box(self, message):
         wx.MessageBox(message, "Info", wx.OK)
